@@ -13,12 +13,16 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import com.mojang.math.Axis;
 import javax.annotation.Nullable;
+
+import org.antlr.v4.parse.v4ParserException;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.PlayerModelPart;
+import net.minecraft.world.phys.Vec3;
 
 
 public class ToiletRenderer<T extends LivingEntity> {
@@ -28,11 +32,11 @@ public class ToiletRenderer<T extends LivingEntity> {
         this.model = model;
     }
 
-    public float getAttackAnim(T player, float f) {
+   public float getAttackAnim(T player, float f) {
         return 0f;
     }
 
-    public boolean isEntityUpsideDown(T p_194454_) {
+   public boolean isEntityUpsideDown(T p_194454_) {
         if (p_194454_ instanceof Player || p_194454_.hasCustomName()) {
            String s = ChatFormatting.stripFormatting(p_194454_.getName().getString());
            if ("Dinnerbone".equals(s) || "Grumm".equals(s)) {
@@ -43,56 +47,85 @@ public class ToiletRenderer<T extends LivingEntity> {
         return false;
     }
 
-    protected float getBob(T p_115305_, float p_115306_) {
+   protected float getBob(T p_115305_, float p_115306_) {
         return (float)p_115305_.tickCount + p_115306_;
      }
   
-     protected float getFlipDegrees(T p_115337_) {
+   protected float getFlipDegrees(T p_115337_) {
         return 90.0F;
      }
   
-     protected float getWhiteOverlayProgress(T p_115334_, float p_115335_) {
+   protected float getWhiteOverlayProgress(T p_115334_, float p_115335_) {
         return 0.0F;
      }
   
-     protected void scale(T p_115314_, PoseStack p_115315_, float p_115316_) {
+   protected void scale(T p_115314_, PoseStack p_115315_, float p_115316_) {
      }
 
-     protected boolean isShaking(T p_115304_) {
+   protected boolean isShaking(T p_115304_) {
         return p_115304_.isFullyFrozen();
      }
   
-     protected void setupRotations(T p_115317_, PoseStack p_115318_, float p_115319_, float p_115320_, float p_115321_) {
-        if (this.isShaking(p_115317_)) {
-           p_115320_ += (float)(Math.cos((double)p_115317_.tickCount * 3.25D) * Math.PI * (double)0.4F);
-        }
-  
-        if (!p_115317_.hasPose(Pose.SLEEPING)) {
-           p_115318_.mulPose(Axis.YP.rotationDegrees(180.0F - p_115320_));
-        }
-  
-        if (p_115317_.deathTime > 0) {
-           float f = ((float)p_115317_.deathTime + p_115321_ - 1.0F) / 20.0F * 1.6F;
-           f = Mth.sqrt(f);
-           if (f > 1.0F) {
-              f = 1.0F;
-           }
-  
-           p_115318_.mulPose(Axis.ZP.rotationDegrees(f * this.getFlipDegrees(p_115317_)));
-        } else if (p_115317_.isAutoSpinAttack()) {
-           p_115318_.mulPose(Axis.XP.rotationDegrees(-90.0F - p_115317_.getXRot()));
-           p_115318_.mulPose(Axis.YP.rotationDegrees(((float)p_115317_.tickCount + p_115321_) * -75.0F));
-        } else if (p_115317_.hasPose(Pose.SLEEPING)) {
-           Direction direction = p_115317_.getBedOrientation();
-           float f1 = direction != null ? sleepDirectionToRotation(direction) : p_115320_;
-           p_115318_.mulPose(Axis.YP.rotationDegrees(f1));
-           p_115318_.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(p_115317_)));
-           p_115318_.mulPose(Axis.YP.rotationDegrees(270.0F));
-        } else if (isEntityUpsideDown(p_115317_)) {
-           p_115318_.translate(0.0F, p_115317_.getBbHeight() + 0.1F, 0.0F);
-           p_115318_.mulPose(Axis.ZP.rotationDegrees(180.0F));
-        }
-  
+   protected void setupRotations(T p_115317_, PoseStack p_115318_, float p_115319_, float p_115320_, float p_115321_) {
+      if (this.isShaking(p_115317_)) {
+         p_115320_ += (float)(Math.cos((double)p_115317_.tickCount * 3.25D) * Math.PI * (double)0.4F);
+      }
+
+      if (!p_115317_.hasPose(Pose.SLEEPING)) {
+         p_115318_.mulPose(Axis.YP.rotationDegrees(180.0F - p_115320_));
+      }
+
+      if (p_115317_.deathTime > 0) {
+         float f = ((float)p_115317_.deathTime + p_115321_ - 1.0F) / 20.0F * 1.6F;
+         f = Mth.sqrt(f);
+         if (f > 1.0F) {
+            f = 1.0F;
+         }
+
+         p_115318_.mulPose(Axis.ZP.rotationDegrees(f * this.getFlipDegrees(p_115317_)));
+      } else if (p_115317_.isAutoSpinAttack()) {
+         p_115318_.mulPose(Axis.XP.rotationDegrees(-90.0F - p_115317_.getXRot()));
+         p_115318_.mulPose(Axis.YP.rotationDegrees(((float)p_115317_.tickCount + p_115321_) * -75.0F));
+      } else if (p_115317_.hasPose(Pose.SLEEPING)) {
+         Direction direction = p_115317_.getBedOrientation();
+         float f1 = direction != null ? sleepDirectionToRotation(direction) : p_115320_;
+         p_115318_.mulPose(Axis.YP.rotationDegrees(f1));
+         p_115318_.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(p_115317_)));
+         p_115318_.mulPose(Axis.YP.rotationDegrees(270.0F));
+      } else if (isEntityUpsideDown(p_115317_)) {
+         p_115318_.translate(0.0F, p_115317_.getBbHeight() + 0.1F, 0.0F);
+         p_115318_.mulPose(Axis.ZP.rotationDegrees(180.0F));
+      }
+
+
+      float f = p_115317_.getSwimAmount(p_115321_);
+      if (p_115317_.isFallFlying()) {
+         float f1 = (float)p_115317_.getFallFlyingTicks() + p_115321_;
+         float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
+         if (!p_115317_.isAutoSpinAttack()) {
+            p_115318_.mulPose(Axis.XP.rotationDegrees(f2 * (-90.0F - p_115317_.getXRot())));
+         }
+
+         Vec3 vec3 = p_115317_.getViewVector(p_115321_);
+         Vec3 vec31 = new Vec3(1,1,1); //p_115317_.getDeltaMovementLerped(p_115321_);
+         double d0 = vec31.horizontalDistanceSqr();
+         double d1 = vec3.horizontalDistanceSqr();
+         if (d0 > 0.0D && d1 > 0.0D) {
+            double d2 = (vec31.x * vec3.x + vec31.z * vec3.z) / Math.sqrt(d0 * d1);
+            double d3 = vec31.x * vec3.z - vec31.z * vec3.x;
+            p_115318_.mulPose(Axis.YP.rotation((float)(Math.signum(d3) * Math.acos(d2))));
+         }
+      } else if (f > 0.0F) {
+         float f3 = p_115317_.isInWater() || p_115317_.isInFluidType((fluidType, height) -> p_115317_.canSwimInFluidType(fluidType)) ? -90.0F - p_115317_.getXRot() : -90.0F;
+         float f4 = Mth.lerp(f, 0.0F, f3);
+         p_115318_.mulPose(Axis.XP.rotationDegrees(f4));
+         if (p_115317_.isVisuallySwimming()) {
+            p_115318_.translate(0.0F, -1.0F, 0.3F);
+         }
+      } else {
+
+
+      }
      }
 
 /*     public ToiletRenderer(Context p_174289_) {
