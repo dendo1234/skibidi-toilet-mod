@@ -136,7 +136,7 @@ public class ToiletRenderer<T extends LivingEntity> {
         super(p_174289_, new ToiletModel<>(p_174289_.bakeLayer(ToiletModel.LAYER_LOCATION)), p_174291_);
     } */
 
-    private final static ResourceLocation toiletTexture = new ResourceLocation(ExampleMod.MODID, "textures/toilet_texture.png");
+    private final static ResourceLocation toiletTexture = new ResourceLocation(SkibidiMod.MODID, "textures/toilet_texture.png");
 
     public void render(T p_115308_, float p_115309_, float p_115310_, PoseStack p_115311_, MultiBufferSource p_115312_, int p_115313_) {
         p_115311_.pushPose();

@@ -1,6 +1,6 @@
 package com.gmail.dendocontato.skibidi.events;
 
-import com.gmail.dendocontato.skibidi.ExampleMod;
+import com.gmail.dendocontato.skibidi.SkibidiMod;
 import com.gmail.dendocontato.skibidi.capabilities.SkibidiPlayerDataProvider;
 import com.gmail.dendocontato.skibidi.commands.SkibidiCommand;
 
@@ -15,7 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.command.ConfigCommand;
 
-@Mod.EventBusSubscriber(modid = ExampleMod.MODID)
+@Mod.EventBusSubscriber(modid = SkibidiMod.MODID)
 public class ClientModEvents {
     @SubscribeEvent
     public static void AttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
@@ -24,7 +24,7 @@ public class ClientModEvents {
         }
 
         if(!event.getObject().getCapability(SkibidiPlayerDataProvider.SKIBIDY_TYPE).isPresent()) {
-            event.addCapability(new ResourceLocation(ExampleMod.MODID, "skibidi_player"), new SkibidiPlayerDataProvider());
+            event.addCapability(new ResourceLocation(SkibidiMod.MODID, "skibidi_player"), new SkibidiPlayerDataProvider());
         }
         
     }
