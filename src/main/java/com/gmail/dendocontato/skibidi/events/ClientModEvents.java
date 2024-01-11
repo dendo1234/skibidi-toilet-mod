@@ -3,9 +3,14 @@ package com.gmail.dendocontato.skibidi.events;
 import com.gmail.dendocontato.skibidi.SkibidiMod;
 import com.gmail.dendocontato.skibidi.capabilities.SkibidiPlayerDataProvider;
 import com.gmail.dendocontato.skibidi.commands.SkibidiCommand;
+import com.gmail.dendocontato.skibidi.networking.ModMessages;
+import com.gmail.dendocontato.skibidi.networking.packet.SkibidiDataAskC2SPacket;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityEvent;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -47,5 +52,14 @@ public class ClientModEvents {
         
         ConfigCommand.register(event.getDispatcher());
     }
+
+    @SubscribeEvent
+    public static void onPlayerTracking(PlayerEvent.StartTracking event) {
+        if (Minecraft.getInstance().getConnection() == null) {
+            return;
+        }
+        ModMessages.sendToServer(new SkibidiDataAskC2SPacket(event.getTarget().getId()));
+    }
+
     
 }

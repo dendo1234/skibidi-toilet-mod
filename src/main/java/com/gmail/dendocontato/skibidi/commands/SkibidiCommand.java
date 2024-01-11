@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import com.gmail.dendocontato.skibidi.capabilities.SkibidiPlayerDataProvider;
 import com.gmail.dendocontato.skibidi.capabilities.SkibidiType;
+import com.gmail.dendocontato.skibidi.networking.ModMessages;
+import com.gmail.dendocontato.skibidi.networking.packet.SkibidiDataSyncS2CPacket;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -49,7 +51,10 @@ public class SkibidiCommand {
             serverplayer.getCapability(SkibidiPlayerDataProvider.SKIBIDY_TYPE).ifPresent(cap -> {
                 cap.setSkibidiType(SkibidiType.byName(skibidi));
             });
+            ModMessages.sendToAllPlayers(new SkibidiDataSyncS2CPacket(SkibidiType.byName(skibidi), serverplayer));
         }
+
+        
 
 
         return 1;
