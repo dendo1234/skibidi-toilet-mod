@@ -2,6 +2,7 @@ package com.gmail.dendocontato.skibidi.networking.packet;
 
 import java.util.function.Supplier;
 
+import com.gmail.dendocontato.skibidi.SkibidiMod;
 import com.gmail.dendocontato.skibidi.capabilities.SkibidiPlayerDataProvider;
 import com.gmail.dendocontato.skibidi.capabilities.SkibidiType;
 
@@ -33,9 +34,13 @@ public class SkibidiDataSyncS2CPacket {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        SkibidiMod.LOGGER.info(player.getName().getString());
         NetworkEvent.Context context = supplier.get();
+        SkibidiMod.LOGGER.info("teste gene");
+        SkibidiMod.LOGGER.info("update: " + player.getName().toString());
         context.enqueueWork(() -> {
             player.getCapability(SkibidiPlayerDataProvider.SKIBIDY_TYPE).ifPresent(cap -> {
+                SkibidiMod.LOGGER.info("with: " + skibidiType.name());
                 cap.setSkibidiType(skibidiType);
             });
         });

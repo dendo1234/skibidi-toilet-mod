@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "skibidi:item/skibidi_toilet_full_song_disc"
+  }
+}

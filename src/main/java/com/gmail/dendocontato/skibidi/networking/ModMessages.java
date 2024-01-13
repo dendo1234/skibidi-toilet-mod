@@ -3,9 +3,11 @@ package com.gmail.dendocontato.skibidi.networking;
 import com.gmail.dendocontato.skibidi.SkibidiMod;
 import com.gmail.dendocontato.skibidi.networking.packet.SkibidiDataAskC2SPacket;
 import com.gmail.dendocontato.skibidi.networking.packet.SkibidiDataSyncS2CPacket;
+import com.gmail.dendocontato.skibidi.networking.packet.TestS2CPacket;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -40,10 +42,20 @@ public class ModMessages {
            .encoder(SkibidiDataAskC2SPacket::toBytes)
            .consumerMainThread(SkibidiDataAskC2SPacket::handle)
            .add();
+
+           net.messageBuilder(TestS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+           .decoder(TestS2CPacket::new)
+           .encoder(TestS2CPacket::toBytes)
+           .consumerMainThread(TestS2CPacket::handle)
+           .add();
     }
     
     public static <MSG> void sendToServer(MSG message) {
         INSTANCE.sendToServer(message);
+    }
+
+    public static <MSG> void sendToPlayersTracking(MSG message, Entity entity) {
+        INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
     }
 
     public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {

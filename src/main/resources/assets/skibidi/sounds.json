@@ -1,0 +1,18 @@
+{
+    "skibidi_fortnite": {
+        "sounds": [
+            {
+                "name": "skibidi:skibidi_fortnite",
+                "stream": true
+            }
+        ]
+    },
+    "skibidi_toilet_full_song": {
+        "sounds": [
+            {
+                "name": "skibidi:skibidi_toilet_full_song",
+                "stream": true
+            }
+        ]
+    }
+}

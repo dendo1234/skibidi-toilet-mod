@@ -1,6 +1,8 @@
 package com.gmail.dendocontato.skibidi;
 
+import com.gmail.dendocontato.skibidi.item.custom.ModItems;
 import com.gmail.dendocontato.skibidi.networking.ModMessages;
+import com.gmail.dendocontato.skibidi.sound.ModSounds;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
@@ -38,7 +40,7 @@ public class SkibidiMod
     // Define mod id in a common place for everything to reference
     public static final String MODID = "skibidi";
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
@@ -64,6 +66,8 @@ public class SkibidiMod
             .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
+                output.accept(ModItems.SKIBIDI_FORTNITE_DISC.get());
+                output.accept(ModItems.SKIBIDI_TOILET_FULL_SONG_DISC.get());
             }).build());
 
     public SkibidiMod()
@@ -88,6 +92,9 @@ public class SkibidiMod
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+        ModItems.register(modEventBus);
+        ModSounds.register(modEventBus);
 
     }
 

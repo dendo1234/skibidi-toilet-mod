@@ -1,6 +1,8 @@
-package com.gmail.dendocontato.skibidi;
+package com.gmail.dendocontato.skibidi.renderer;
 
 
+import com.gmail.dendocontato.skibidi.SkibidiMod;
+import com.gmail.dendocontato.skibidi.model.ToiletModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 

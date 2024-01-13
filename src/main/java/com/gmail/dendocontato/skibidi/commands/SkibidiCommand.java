@@ -6,10 +6,12 @@ import com.gmail.dendocontato.skibidi.capabilities.SkibidiPlayerDataProvider;
 import com.gmail.dendocontato.skibidi.capabilities.SkibidiType;
 import com.gmail.dendocontato.skibidi.networking.ModMessages;
 import com.gmail.dendocontato.skibidi.networking.packet.SkibidiDataSyncS2CPacket;
+import com.gmail.dendocontato.skibidi.networking.packet.TestS2CPacket;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import io.netty.util.internal.ThreadLocalRandom;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -51,11 +53,8 @@ public class SkibidiCommand {
             serverplayer.getCapability(SkibidiPlayerDataProvider.SKIBIDY_TYPE).ifPresent(cap -> {
                 cap.setSkibidiType(SkibidiType.byName(skibidi));
             });
-            ModMessages.sendToAllPlayers(new SkibidiDataSyncS2CPacket(SkibidiType.byName(skibidi), serverplayer));
+            ModMessages.sendToPlayersTracking(new SkibidiDataSyncS2CPacket(SkibidiType.byName(skibidi), serverplayer), serverplayer);
         }
-
-        
-
 
         return 1;
     }

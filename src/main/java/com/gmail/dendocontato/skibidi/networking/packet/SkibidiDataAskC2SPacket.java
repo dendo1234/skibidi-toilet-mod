@@ -2,6 +2,7 @@ package com.gmail.dendocontato.skibidi.networking.packet;
 
 import java.util.function.Supplier;
 
+import com.gmail.dendocontato.skibidi.SkibidiMod;
 import com.gmail.dendocontato.skibidi.capabilities.SkibidiPlayerDataProvider;
 import com.gmail.dendocontato.skibidi.networking.ModMessages;
 
@@ -10,6 +11,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkEvent;
 
+//Package troll
 public class SkibidiDataAskC2SPacket {
     private final int entityId;
 
@@ -26,12 +28,15 @@ public class SkibidiDataAskC2SPacket {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
-        
-        Entity targetPlayer = Minecraft.getInstance().level.getEntity(entityId);
-        targetPlayer.getCapability(SkibidiPlayerDataProvider.SKIBIDY_TYPE).ifPresent(cap -> {
-            System.out.println(cap.getSkibidiType().name());
-            ModMessages.sendToPlayer(new SkibidiDataSyncS2CPacket(cap.getSkibidiType(), targetPlayer), supplier.get().getSender());
-        });
+        supplier.get().enqueueWork(() -> {
+            SkibidiMod.LOGGER.info("servidor");
+            Entity targetPlayer = Minecraft.getInstance().level.getEntity(entityId);
+            targetPlayer.getCapability(SkibidiPlayerDataProvider.SKIBIDY_TYPE).ifPresent(cap -> {
+                SkibidiMod.LOGGER.info(cap.getSkibidiType().name());
+                ModMessages.sendToPlayer(new SkibidiDataSyncS2CPacket(cap.getSkibidiType(), targetPlayer), supplier.get().getSender());
+            });
+        }
+        );
 
         return true;
     }
